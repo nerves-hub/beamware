@@ -1,6 +1,6 @@
 import Config
 
-web_host = "nerves-hub.org"
+web_host = System.get_env("NERVES_HUB_HOST", "nerves-hub.org")
 web_port = 4000
 web_scheme = "http"
 
@@ -25,8 +25,8 @@ config :nerves_hub_api, NervesHubAPIWeb.Endpoint,
     otp_app: :nerves_hub_api,
     # Enable client SSL
     verify: :verify_peer,
-    keyfile: Path.join(ssl_dir, "api.nerves-hub.org-key.pem"),
-    certfile: Path.join(ssl_dir, "api.nerves-hub.org.pem"),
+    keyfile: Path.join(ssl_dir, "api.#{web_host}-key.pem"),
+    certfile: Path.join(ssl_dir, "api.#{web_host}.pem"),
     cacertfile: Path.join(ssl_dir, "ca.pem")
   ]
 
@@ -46,8 +46,8 @@ config :nerves_hub_device, NervesHubDeviceWeb.Endpoint,
     verify: :verify_peer,
     verify_fun: {&NervesHubDevice.SSL.verify_fun/3, nil},
     fail_if_no_peer_cert: true,
-    keyfile: Path.join(ssl_dir, "device.nerves-hub.org-key.pem"),
-    certfile: Path.join(ssl_dir, "device.nerves-hub.org.pem"),
+    keyfile: Path.join(ssl_dir, "device.#{web_host}-key.pem"),
+    certfile: Path.join(ssl_dir, "device.#{web_host}.pem"),
     cacertfile: Path.join(ssl_dir, "ca.pem")
   ]
 
@@ -74,7 +74,7 @@ config :nerves_hub_web_core, NervesHubWebCore.CertificateAuthority,
   port: 8443,
   ssl: [
     cacertfile: Path.join(ssl_dir, "ca.pem"),
-    server_name_indication: 'ca.nerves-hub.org'
+    server_name_indication: 'ca.#{web_host}'
   ]
 
 config :nerves_hub_web_core, NervesHubWebCore.Mailer, adapter: Bamboo.LocalAdapter
